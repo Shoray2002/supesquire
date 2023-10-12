@@ -1,19 +1,24 @@
 import format from 'date-fns/format';
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 
 import CodeBlock from '@/app/CodeBlock';
 import { Face6, SmartToy } from '@mui/icons-material';
 import { Box, Card, Grid, Icon, ListItem, Typography } from '@mui/material';
 
+import ChatMenu from './ChatMenu';
+
 export default memo(function ChatItem({
   rowPosition,
   style,
   conversation,
+  setConversations,
   listRef,
   rowRef,
   rowHeights
 }) {
+  const [showMenu, setShowMenu] = useState(false);
+
   let styles = {
     background: '#4b637d',
     color: '#ffffff',
@@ -112,7 +117,8 @@ export default memo(function ChatItem({
           sx={{
             fontSize: '10px',
             color: '#a8adb2',
-            fontWeight: '500'
+            fontWeight: '500',
+            userSelect: 'none'
           }}
         >
           {formattedTimestamp}
@@ -164,7 +170,18 @@ export default memo(function ChatItem({
               margin: '5px',
               userSelect: 'text'
             }}
+            onMouseEnter={() => {
+              setShowMenu(true);
+            }}
+            onMouseLeave={() => {
+              setShowMenu(false);
+            }}
           >
+            <ChatMenu
+              showMenu={showMenu}
+              chatId={conversation.id}
+              setConversations={setConversations}
+            />
             <CodeBlock message={conversation.message} />
             {conversation.created_at && (
               <TimeStamp conversation={conversation} />
